@@ -12,6 +12,10 @@ global.requireSocket = function(path) {
     return require(`${__dirname}/serve/socket-server/${path}`);
 }
 
+global.requireMail = function(path) {
+    return require(`${__dirname}/serve/mail-server/${path}`);
+}
+
 global.requireDatamodel = function(modelName) {
     return require(`${__dirname}/data-models/${modelName}`);
 }
