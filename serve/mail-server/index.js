@@ -4,9 +4,10 @@
 const Config        = require("config");
 const nodemailer    = require("nodemailer");
 const addMail       = requireMail("controllers/addMail.js");
+const mail          = requireMail("controllers/sendMail.js")(nodemailer.createTransport(Config["mail-server"].smtp));
 
 // create reusable transporter object using the default SMTP transport
-const transporter = nodemailer.createTransport(Config["mail-server"].smtp);
+// const transporter = ;
 
 // setup e-mail data with unicode symbols
 const mailOptions = {
@@ -17,14 +18,13 @@ const mailOptions = {
     html: "<b>HTML</b>" // html body
 };
 
+mail.processQueu();
+
 
 
 // addMail(mailOptions).catch(err => {
 //     console.error(err);
 // })
-
-
-
 
 
 
@@ -36,4 +36,4 @@ const mailOptions = {
 //     console.log(`Message sent: ${info.response}`);
 // });
 
-module.exports = transporter;
+module.exports = mail;
