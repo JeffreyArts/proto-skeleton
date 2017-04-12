@@ -42,6 +42,10 @@ module.exports = {
         testPath: "/test"
     },
 
+    "mail-server": {
+        smtp: "smtps://prototypeskeleton%40gmail.com:thisisnotapassword@smtp.gmail.com"
+    },
+
     "init": {
         directory: `${__dirname}/../serve/initialization/data`
     },

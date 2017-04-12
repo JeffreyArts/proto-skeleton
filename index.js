@@ -24,6 +24,7 @@ const serve = app => {
     const applicationMapping = {
         "init": "./serve/initialization",
         "socket-server": "./serve/socket-server",
+        "mail-server": "./serve/mail-server",
         "api-server": "./serve/api-server"
     }
 
