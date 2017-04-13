@@ -40,6 +40,9 @@ module.exports = {
             });
         });
     },
+    getMailObject: () => {
+        return merge({}, emailModel);
+    },
     getFromQueu: objectId => {
         let query = {};
 
