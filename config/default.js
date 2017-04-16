@@ -43,7 +43,6 @@ module.exports = {
     },
 
     "mail-server": {
-        smtp: "smtps://prototypeskeleton%40gmail.com:thisisnotapassword@smtp.gmail.com",
         interval: 10000 // Amount of miliseconds between mails
     },
 

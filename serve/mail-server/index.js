@@ -17,4 +17,5 @@ const processQueu = () => {
 
 processQueu();
 
+console.log(`Using: ${Config["mail-server"].smtp}`);
 module.exports = Mail;
