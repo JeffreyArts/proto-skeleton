@@ -5,7 +5,7 @@ const isAuthorized      = requireApi("passport-strategies/jwt").authorize;
 const localAuthorize    = requireApi("passport-strategies/local").authorize;
 
 // Middleware
-const setReturnUrl = requireApi("middleware/auth/set-return-url")
+const setReturnUrl = requireApi("middleware/auth/set-return-url");
 
 
 module.exports = function(app) {
@@ -34,8 +34,6 @@ module.exports = function(app) {
         app.get("/auth/google"              , setReturnUrl, googleAuthorize         );
         app.get("/auth/google/callback"     , googleAuthorize                       , requireApi("controllers/auth/access-token"));
     }
-
-
 
 
     app.get("/test", isAuthorized, (req,res) => {

@@ -98,7 +98,6 @@ const Account = {
             if (!account) {
                 return reject("accountNotFound");
             }
-
             if (password) {
                 if (account.hashedPassword !== pass.getHashedPass(password, account.salt)) {
                     return reject("incorrectPassword");
@@ -146,7 +145,6 @@ const Account = {
                 // Create account when none is found
                 return reject("accountNotFound");
             }
-
             return resolve(account);
         });
     })
