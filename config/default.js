@@ -44,7 +44,9 @@ module.exports = {
     },
 
     "mail-server": {
-        interval: 10000 // Amount of miliseconds between mails
+        interval: 10000, // Amount of miliseconds between mails
+        smtp: null,
+        appUrl: ""
     },
 
     "init": {

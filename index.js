@@ -20,6 +20,10 @@ global.requireDatamodel = function(modelName) {
     return require(`${__dirname}/data-models/${modelName}`);
 }
 
+global.requireLocale = function(path) {
+    return require(`${__dirname}/locales/${path}`);
+}
+
 const _ = require("lodash");
 
 
