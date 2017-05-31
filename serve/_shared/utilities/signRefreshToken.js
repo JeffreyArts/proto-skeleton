@@ -1,3 +1,5 @@
+/* global  */
+
 const jwt = require("jsonwebtoken");
 const Config = require("config");
 
@@ -11,9 +13,10 @@ module.exports = account => {
     if (!account) {
         return {errorType: "invalidFunctionInput"};
     }
+    account.tokenType = "refresh";
 
     const token = jwt.sign(account, Config.security.secret, {
-        expiresIn: Config.security.tokenLife,
+        expiresIn: Config.security.refreshTokenLife,
         algorithm: Config.security.hash
     });
 

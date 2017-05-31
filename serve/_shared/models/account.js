@@ -6,7 +6,9 @@ const _ = require("lodash"),
     db = requireShared("utilities/db"),
     accountModel = requireDatamodel("account"),
     ObjectId = require("promised-mongo").ObjectId,
-    collection = db.get("accounts");
+    collection = db.get("accounts"),
+    jwt = require("jsonwebtoken"),
+    Config = require("config");
 
 const Account = {
     create: function(account) {
@@ -66,6 +68,7 @@ const Account = {
         .catch(reject);
     }),
 
+    // Create account
     createViaFacebook: function(account) {
 
         if (!account.facebookId) {
@@ -107,6 +110,10 @@ const Account = {
         });
 
     },
+
+
+
+    // Get account
     getByEmail: (email, password) => new Promise((resolve, reject) => {
         collection.findOne({email: email})
         .then(account => {
@@ -138,6 +145,10 @@ const Account = {
                 delete account.hashedPassword;
 
                 return resolve(account);
+            })
+            .catch(err => {
+                console.error(err);
+                reject("internalServerError");
             });
         } else {
             return reject("invalidId");
@@ -171,6 +182,20 @@ const Account = {
         .catch(err => {
             console.error(err);
             reject("internalServerError");
+        });
+    }),
+
+    // Get token
+    getAccessTokenByRefresh: refreshToken => new Promise((resolve, reject) => {
+        jwt.verify(refreshToken, Config.security.secret, {
+            algorithms: [Config.security.hash]
+        }, (err, decoded) => {
+            if (err) {
+                console.log("error:",err);
+                reject("invalidToken")
+            } else {
+                resolve(decoded);
+            }
         });
     })
 };
