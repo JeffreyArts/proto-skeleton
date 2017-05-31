@@ -2,6 +2,7 @@
 
 const Config            = require("config");
 const isAuthorized      = requireApi("passport-strategies/jwt").authorize;
+const isSelf            = requireApi("middleware/auth/is-self");
 const localAuthorize    = requireApi("passport-strategies/local").authorize;
 
 // Middleware
@@ -14,7 +15,7 @@ module.exports = function(app) {
     // Accounts / Authorization
     app.delete("/accounts/:accountId"                                               , requireApi("controllers/account/delete"));
     app.post("/accounts"                                                            , requireApi("controllers/account/create"));
-    app.patch("/accounts/:accountId"    , isAuthorized                              , requireApi("controllers/account/update"));
+    app.patch("/accounts/:accountId"    , isAuthorized, isSelf                      , requireApi("controllers/account/update"));
     app.post("/register"                                                            , requireApi("controllers/account/create"));
     app.get("/auth"                     , isAuthorized                              , requireApi("controllers/auth/me"));
 
