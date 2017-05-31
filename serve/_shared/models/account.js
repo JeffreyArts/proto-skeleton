@@ -191,10 +191,26 @@ const Account = {
             algorithms: [Config.security.hash]
         }, (err, decoded) => {
             if (err) {
-                console.log("error:",err);
-                reject("invalidToken")
+                return reject("corruptedToken")
             } else {
-                resolve(decoded);
+                if (decoded.tokenType === "refresh") {    
+                    return resolve(decoded);
+                }
+                return reject("invalidToken")
+            }
+        });
+    }),
+    getAccessTokenByPasswordReset: passwordResetToken => new Promise((resolve, reject) => {
+        jwt.verify(passwordResetToken, Config.security.secret, {
+            algorithms: [Config.security.hash]
+        }, (err, decoded) => {
+            if (err) {
+                return reject("corruptedToken")
+            } else {
+                if (decoded.tokenType === "passwordReset") {
+                    return resolve(decoded);
+                }
+                return reject("invalidToken")
             }
         });
     })

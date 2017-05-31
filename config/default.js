@@ -66,6 +66,7 @@ module.exports = {
         //changes in user-permissions to be propagated.
         accessTokenLife: 21600, // 6 minutes
         refreshTokenLife: 1209600, // 14 days
+        passwordResetTokenLife: 3600, // 1 hour
         hash: "HS256",
 
         facebook: {
