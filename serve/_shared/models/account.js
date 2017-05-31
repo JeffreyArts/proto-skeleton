@@ -38,8 +38,34 @@ const Account = {
 
         });
 
-
     },
+    update: (accountId, properties) => new Promise((resolve, reject) => {
+        Account.getById(accountId)
+        .then(account => {
+            const updatedAccount = _.merge({}, account, properties);
+            collection.update({_id: ObjectId(accountId)}, updatedAccount)
+            .then(() => {
+                return resolve(updatedAccount)
+            })
+            .catch(err => {
+                return reject(err);
+            })
+
+        })
+        .catch(reject);
+    }),
+    delete: accountId => new Promise((resolve, reject) => {
+        Account.getById(accountId)
+        .then(account => {
+            collection.remove(ObjectId(accountId))
+            .then(() => {
+                return resolve(account);
+            })
+            .catch(reject);
+        })
+        .catch(reject);
+    }),
+
     createViaFacebook: function(account) {
 
         if (!account.facebookId) {
@@ -81,17 +107,6 @@ const Account = {
         });
 
     },
-    delete: accountId => new Promise((resolve, reject) => {
-        Account.getById(accountId)
-        .then(account => {
-            collection.remove(ObjectId(accountId))
-            .then(() => {
-                return resolve(account);
-            })
-            .catch(reject);
-        })
-        .catch(reject);
-    }),
     getByEmail: (email, password) => new Promise((resolve, reject) => {
         collection.findOne({email: email})
         .then(account => {

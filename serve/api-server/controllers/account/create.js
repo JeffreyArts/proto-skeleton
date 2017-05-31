@@ -12,7 +12,7 @@ const doesNotExists = requireApi("validators/account/doesNotExists");
 module.exports = function(req, res) {
 
     const newAccount = req.body;
-    console.log("req.body", req.body);
+    
     Promise.all([
         hasPassword(newAccount),
         hasEmail(newAccount),
