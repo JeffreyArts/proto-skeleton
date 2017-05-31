@@ -16,6 +16,11 @@ const processQueu = () => {
 }
 
 processQueu();
-
-console.log(`Using: ${Config["mail-server"].smtp}`);
+if (Config["mail-server"] && Config["mail-server"].smtp) {
+    console.log(`Using: ${Config["mail-server"].smtp}`);
+} else {
+    console.log(``);
+    console.log(`Please specify a smtp server first`);
+    console.log(`config["mail-server"].smtp`);
+}
 module.exports = Mail;
