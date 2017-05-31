@@ -2,6 +2,9 @@
 "use strict";
 
 const Config            = require("config");
+const fs                = require("fs");
+const ejs               = require("ejs");
+const sass              = require("node-sass");
 const nodemailer        = require("nodemailer");
 const moment            = require("moment");
 const ObjectId          = require("promised-mongo").ObjectId;
@@ -14,6 +17,56 @@ const collection        = db.get("mailingQueu");
 
 // const mail          = requireMail("controllers/sendMail.js")(nodemailer.createTransport(Config["mail-server"].smtp));
 const transporter = nodemailer.createTransport(Config["mail-server"].smtp);
+
+let templateDirectory = `./serve/mail-server/templates/default`;
+
+const ejsToHtml = (filePath, data) => {
+    const options = {
+        cache: false,
+        root: templateDirectory
+    };
+
+    return new Promise((resolve, reject) => {
+
+        fs.readFile(filePath, err => {
+            if (err) {
+                return reject(err);
+            }
+
+            ejs.renderFile(filePath, data, options, (err, str) => {
+                if (err) {
+                    return reject(err);
+                }
+                
+                return resolve(str)
+            });
+        });
+    })
+}
+
+
+const scssToCss = inputFile => {
+    const options = {
+        file: inputFile
+    };
+
+    return new Promise((resolve, reject) => {
+
+        fs.readFile(inputFile, err => {
+            if (err) {
+                return reject(err);
+            }
+            sass.render(options, (err, res) => {
+
+                if (err) {
+                    return reject(err);
+                }
+
+                return resolve(res.css.toString());
+            });
+        });
+    });
+}
 
 module.exports = {
     add: mailObject => {
@@ -75,4 +128,30 @@ module.exports = {
             })
         })
     },
+    getTemplate: (templateName, data) => {
+
+        fs.readFile(`./serve/mail-server/templates/${templateName}`, err => {
+            if (!err) {
+                templateDirectory = `./serve/mail-server/templates/${templateName}`;
+            }
+        });
+
+        return new Promise((resolve,reject) => {
+
+            return Promise.all([
+                ejsToHtml(`${templateDirectory}/${templateName}.ejs`, data),
+                scssToCss(`${templateDirectory}/${templateName}.scss`)
+            ])
+            .then(v => {
+                const html = v[0];
+                const css = v[1];
+
+                resolve(html.replace(/<css>/, `<style>${css}</style>`))
+            })
+            .catch(err => {
+                console.error(err);
+                reject(err)
+            })
+        })
+    }
 }
