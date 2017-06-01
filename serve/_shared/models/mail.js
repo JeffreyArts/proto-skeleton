@@ -37,7 +37,7 @@ const ejsToHtml = (filePath, data) => {
                 if (err) {
                     return reject(err);
                 }
-                
+
                 return resolve(str)
             });
         });
@@ -146,10 +146,10 @@ module.exports = {
                 const html = v[0];
                 const css = v[1];
 
+                // Insert css as internal stylesheet
                 resolve(html.replace(/<css>/, `<style>${css}</style>`))
             })
             .catch(err => {
-                console.error(err);
                 reject(err)
             })
         })

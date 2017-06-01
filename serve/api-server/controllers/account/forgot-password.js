@@ -17,7 +17,7 @@ module.exports = function(req, res) {
     .then(account => {
         if (account.email) {
             // Start generation of passwordResetToken
-            const token = signToken({_id: accountId}, passwordReset);
+            const token = signToken({_id: accountId}, "passwordReset");
             // End generation of passwordResetToken
 
             // Start definition of emailObject

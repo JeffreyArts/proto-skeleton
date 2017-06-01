@@ -36,7 +36,7 @@ module.exports = {
 
             // Validate corrupted token
             if (!user) {
-                return res.status(422).send({errorType: "corruptedJWT"});
+                return res.status(422).send({errorType: "tokenExpired"});
             }
 
             // Validate token type
