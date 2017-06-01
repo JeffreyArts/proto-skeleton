@@ -7,7 +7,7 @@ const emailDataModel    = requireDatamodel("email");
 
 const Account           = requireShared("models/account");
 const Mail              = requireShared("models/mail");
-const signPasswordResetToken = requireShared("utilities/signPasswordResetToken");
+const signToken         = requireShared("utilities/signToken");
 
 
 module.exports = function(req, res) {
@@ -17,7 +17,7 @@ module.exports = function(req, res) {
     .then(account => {
         if (account.email) {
             // Start generation of passwordResetToken
-            const token = signPasswordResetToken({_id: accountId});
+            const token = signToken({_id: accountId}, passwordReset);
             // End generation of passwordResetToken
 
             // Start definition of emailObject

@@ -1,6 +1,6 @@
 /* global requireShared */
 
-const signAccessToken   = requireShared("utilities/signAccessToken");
+const signToken   = requireShared("utilities/signToken");
 const Account           = requireShared("models/account");
 
 module.exports = function(req, res) {
@@ -30,7 +30,7 @@ module.exports = function(req, res) {
             .then(account => {
                 return res.status(200)
                 .json({
-                    accessToken: signAccessToken(account)
+                    accessToken: signToken(account, "access")
                 })
             })
             .catch(err => {

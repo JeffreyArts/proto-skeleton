@@ -1,22 +1,22 @@
 /* global requireShared */
 
-const signRefreshToken = requireShared("utilities/signRefreshToken");
-const signAccessToken = requireShared("utilities/signAccessToken");
+const signToken = requireShared("utilities/signToken");
 const {pick} = require("lodash");
 
 
 module.exports = (req, res) => {
 
-    const user = pick(req.user, ["_id", "name", "email"]);
-    const userId = pick(req.user, ["_id"]);
+    const accessToken = signToken(pick(req.user, ["_id", "name", "email"]), "access");
+    const refreshToken = signToken(pick(req.user, ["_id"]), "refresh");
+
 
     if (req.session.redirectUrl) {
-        const url = `${req.session.redirectUrl}?refreshToken=${signRefreshToken(user)}`;
+        const url = `${req.session.redirectUrl}?refreshToken=${refreshToken}&accessToken=${accessToken}`;
         res.redirect(url);
     } else {
         res.status(202).send({
-            refreshToken: signRefreshToken(userId),
-            accessToken: signAccessToken(user)
+            refreshToken: refreshToken,
+            accessToken: accessToken
         });
     }
 
