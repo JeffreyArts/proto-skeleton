@@ -17,7 +17,7 @@ module.exports = function(app) {
     app.post("/register"                                                                           , requireApi("controllers/account/create"));
     app.post("/accounts/:accountId/forgot-password"                                                , requireApi("controllers/account/forgot-password"));
     app.post("/accounts/:accountId/access-token"                                                   , requireApi("controllers/account/access-token"));
-    app.get("/accounts/:accountId/forgot-password"                                                 , requireApi("mail-controllers/account/forgot-password"));
+    // For simple styling of html template: app.get("/accounts/:accountId/forgot-password"                                                 , requireApi("mail-controllers/account/forgot-password"));
     app.get("/auth"                                    , isAuthorized                              , requireApi("controllers/auth/me"));
     app.delete("/accounts/:accountId"                  , isAuthorized, isSelf                      , requireApi("controllers/account/delete"));
     app.patch("/accounts/:accountId"                   , isAuthorized, isSelf                      , requireApi("controllers/account/update"));

@@ -41,6 +41,11 @@ header hr {
     background-color: #ddd;
 }
 
+a {
+    word-break: break-all;
+    word-wrap: break-word;
+    display: inline-block;
+}
 
 body {
     background-size: cover;
