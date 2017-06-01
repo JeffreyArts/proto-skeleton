@@ -16,11 +16,7 @@ module.exports = function(req, res) {
     Account.getById(accountId)
     .then(account => {
         if (account.email) {
-            // Start generation of passwordResetToken
             const token = signToken({_id: accountId}, "passwordReset");
-            // End generation of passwordResetToken
-
-            // Start definition of emailObject
             const emailObject = merge({}, emailDataModel);
             const ejsData = {
                 url: `${Config["mail-server"].appUrl}?passwordResetToken=${token}`
@@ -36,9 +32,8 @@ module.exports = function(req, res) {
                     cache: false
                 };
                 emailObject.html = ejs.render(html, ejsData, options);
-                // End definition of emailObject
 
-
+                // Send mail
                 Mail.add(emailObject);
 
                 return res.status(200)

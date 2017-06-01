@@ -12,7 +12,10 @@ module.exports = account => new Promise((resolve, reject) => {
         return resolve(true);
 
     })
-    .catch(() => reject({errorType: "internalServerError"}));
+    .catch(err => {
+        console.error(err);
+        reject({errorType: "internalServerError"})
+    });
 });
 
 

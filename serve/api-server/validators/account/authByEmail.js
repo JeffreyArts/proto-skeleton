@@ -9,6 +9,8 @@ module.exports = account => new Promise((resolve, reject) => {
         if (error === "incorrectPassword" || error === "accountNotFound") {
             return reject({errorType: "incorrectCredentials"});
         }
+        
+        console.error(error);
         return reject({errorType: "internalServerError"});
 
     });
