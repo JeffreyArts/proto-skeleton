@@ -11,12 +11,12 @@ const signToken         = requireShared("utilities/signToken");
 
 
 module.exports = function(req, res) {
-    const accountId         = req.params.accountId;
+    const accountEmail      = req.body.email;
     const templateValues    = requireLocale("en/mail/forgot-password");
-    Account.getById(accountId)
+    Account.getByEmail(accountEmail)
     .then(account => {
         if (account.email) {
-            const token = signToken({_id: accountId}, "passwordReset");
+            const token = signToken({_id: account._id}, "passwordReset");
             const emailObject = merge({}, emailDataModel);
             const ejsData = {
                 url: `${Config["mail-server"].appUrl}?passwordResetToken=${token}`
