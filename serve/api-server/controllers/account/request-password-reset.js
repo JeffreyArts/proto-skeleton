@@ -37,7 +37,9 @@ module.exports = function(req, res) {
                 Mail.add(emailObject);
 
                 return res.status(200)
-                .send(emailObject);
+                .json({
+                    successType: "mailSent"
+                });
             })
             .catch(err => {
                 console.error(err);
