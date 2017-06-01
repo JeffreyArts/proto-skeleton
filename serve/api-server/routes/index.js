@@ -16,10 +16,11 @@ module.exports = function(app) {
     app.post("/accounts"                                                                           , requireApi("controllers/account/create"));
     app.post("/register"                                                                           , requireApi("controllers/account/create"));
     app.post("/accounts/request-password-reset"                                                    , requireApi("controllers/account/request-password-reset"));
-    app.post("/accounts/:accountId/access-token"                                                   , requireApi("controllers/account/access-token"));
     // For simple styling of html template: app.get("/accounts/:accountId/forgot-password"                                                 , requireApi("mail-controllers/account/forgot-password"));
     app.get("/auth"                                    , isAuthorized                              , requireApi("controllers/auth/me"));
+    app.post("/auth/access-token"                                                                  , requireApi("controllers/account/access-token"));
     app.delete("/accounts/:accountId"                  , isAuthorized, isSelf                      , requireApi("controllers/account/delete"));
+    app.post("/accounts/:accountId"                    , isAuthorized, isSelf                      , requireApi("controllers/account/update"));
     app.patch("/accounts/:accountId"                   , isAuthorized, isSelf                      , requireApi("controllers/account/update"));
 
 

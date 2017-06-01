@@ -33,8 +33,7 @@ module.exports = {
 
         Promise.all([
             hasPassword(credentials),
-            hasEmail(credentials),
-            authByEmail(credentials)
+            hasEmail(credentials)
         ]).then(() => {
 
             passport.authenticate("local", (err, account) => {

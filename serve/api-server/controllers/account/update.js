@@ -1,8 +1,8 @@
 /* global requireShared */
 
-const Account = requireShared("models/account");
-const {each, size} = require("lodash");
-
+const Account       = requireShared("models/account");
+const pass          = requireShared("utilities/password");
+const {each, size}  = require("lodash");
 
 // Validators
 const allowedKeys = ["password", "name", "email"]
@@ -36,16 +36,24 @@ module.exports = function(req, res) {
                 errorType: "emptyJSON"
             });
         }
+        
+        if (properties.password) {
+            properties.salt = pass.getSalt();
+            properties.hashedPassword = pass.getHashedPass(properties.password, properties.salt);
+
+            // IMPORTANT: Remove unhashed password
+            delete properties.password;
+        }
 
 
-        Account.update(accountId, properties)
+        return Account.update(accountId, properties)
         .then(updatedAccount => {
             return res.status(201)
             .json(updatedAccount);
         })
         .catch(err => {
             console.error(err);
-            res.status(500)
+            return res.status(500)
             .json({errorCode: "databaseError"});
         });
     })

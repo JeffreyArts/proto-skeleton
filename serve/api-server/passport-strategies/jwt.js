@@ -30,8 +30,8 @@ module.exports = {
             }
 
             // Validate missing token
-            if (info && info.message === "No auth token") {
-                return res.status(422).send({errorType: "noAuthToken"});
+            if (info && info.message === "No access token") {
+                return res.status(422).send({errorType: "noAccessToken"});
             }
 
             // Validate corrupted token

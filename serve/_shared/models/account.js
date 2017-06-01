@@ -47,6 +47,10 @@ const Account = {
             const updatedAccount = _.merge({}, account, properties);
             collection.update({_id: ObjectId(accountId)}, updatedAccount)
             .then(() => {
+                delete updatedAccount.salt;
+                delete updatedAccount.hashedPassword;
+                delete updatedAccount.passwordResetToken;
+
                 return resolve(updatedAccount)
             })
             .catch(err => {
@@ -131,7 +135,11 @@ const Account = {
             delete account.hashedPassword;
 
             return resolve(account);
-        });
+        })
+        .catch(err => {
+            console.log(err);
+            reject("internalServerError");
+        })
     }),
     getById: accountId => new Promise((resolve, reject) => {
         if (accountId.length === 12 || accountId.length === 24  ) {
@@ -193,7 +201,7 @@ const Account = {
             if (err) {
                 return reject("corruptedToken")
             } else {
-                if (decoded.tokenType === "refresh") {    
+                if (decoded.tokenType === "refresh") {
                     return resolve(decoded);
                 }
                 return reject("invalidToken")
