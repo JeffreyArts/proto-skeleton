@@ -3,7 +3,6 @@
 const Account       = requireShared("models/account");
 const pass          = requireShared("utilities/password");
 const {each, size}  = require("lodash");
-
 // Validators
 const allowedKeys = ["password", "name", "email"]
 

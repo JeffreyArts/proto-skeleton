@@ -50,7 +50,6 @@ const Account = {
                 delete updatedAccount.salt;
                 delete updatedAccount.hashedPassword;
                 delete updatedAccount.passwordResetToken;
-
                 return resolve(updatedAccount)
             })
             .catch(err => {

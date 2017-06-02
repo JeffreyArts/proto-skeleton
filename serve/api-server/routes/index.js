@@ -24,6 +24,7 @@ module.exports = function(app) {
     app.patch("/accounts/:accountId"                   , isAuthorized, isSelf                      , requireApi("controllers/account/update"));
 
 
+
     // Local auth
     app.post("/auth"                                    , localAuthorize                            , requireApi("controllers/auth/refresh-token"));
 
