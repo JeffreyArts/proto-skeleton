@@ -36,7 +36,9 @@ const serve = app => {
         "api-server": "./serve/api-server"
     }
 
-    app = app.toLowerCase();
+    if (app) {  
+      app = app.toLowerCase();
+    }
 
     if (typeof applicationMapping[app] != "undefined") {
         return require(applicationMapping[app]);
@@ -49,8 +51,7 @@ const serve = app => {
     }
 }
 
-if (process.argv[2]) {
-    serve(process.argv[2]);
-}
+
+serve(process.argv[2]);
 
 module.exports = serve;
