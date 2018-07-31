@@ -71,6 +71,10 @@ node . api-server
 
 Pretty basic at the moment, the sockets implementation runs on top of Sockets.io. It has support for defining routes like you can do with Express. This enables it to support the powerfull [Connect](https://github.com/senchalabs/connect#readme)-style middleware.
 
+### Configuration
+
+You can configure the socket server similar to the api-server. But with some limitations. The port is pretty straight forward. The path is where the server can be found when the client wants to connect to it. This could be `/socket` for instance, but on default it is just `/`. Since the location of the socket server would be already unique cause it is on a separate port. The `cors.origin` is there to only allow access from a certain domain.
+
 ------------------
 ## Mail server
 

@@ -2,7 +2,12 @@
 "use strict";
 
 const Config      = require("config");
-const io          = require("socket.io")(Config["socket-server"].port);
+const ioConfig = {
+    origins: Config["socket-server"].cors.origin,
+    path: Config["socket-server"].path
+}
+
+const io          = require("socket.io")(Config["socket-server"].port, ioConfig);
 const socketApp   = requireSocket("utilities/socket-app");
 const ioObject    = {};
 

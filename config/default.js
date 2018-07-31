@@ -39,7 +39,11 @@ module.exports = {
 
     "socket-server": {
         port: 3001,
-        testPath: "/test"
+        testPath: "/test",
+        path: "/",
+        cors: {
+            origin: "*:*"
+        }
     },
 
     "mail-server": {
