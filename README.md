@@ -1,20 +1,19 @@
 # About
 
-This repo consist of 3 connected services, sharing code via the shared directory. It consists the following:
+This repo consist of 3 connected services, sharing code via the `shared` directory and all configureable via the config. It consists the following:
 
 - API server
 - Socket server
 - Mail server
 
 ## General information about Config
-The configuration of these services are handled by the beautiful [npm config package](https://www.npmjs.com/package/config). In short, don't touch default.js, use development.js. If you don't want to modify the config of the repo, create a local.js configuration file. The production.js file is meant for - you guessed it - the production environment. For more information about how to properly manage the configuration, [please check the docs](https://www.npmjs.com/package/config).
+The configuration of these services are handled by the beautiful [npm config package](https://www.npmjs.com/package/config). In short, don't touch default.js, use other files to configure your application. Use development.js for the development environment. Create a local.js configuration file to configure for you local machine. And use the production.js file for - you guessed it - the production environment. For more detailed information [check the docs](https://www.npmjs.com/package/config).
 
 ### Important config settings
 Set the database:
 
 `mongodb.database = "mongodb://127.0.0.1:27017/proto-skeleton"
 `
-
 
 Set a secret key (used for signing the JWT):
 
@@ -25,14 +24,9 @@ Set a secret key (used for signing the JWT):
 
 ## API server
 
-The api server is REST based with JSON webtokens for authentication and is build with Express. It has 3 different ways to authenticate with it on default and is easily exendable by adding more [Passport](http://passportjs.org/docs) strategies. These 3 strategies (local, Facebook & Google) are configureable by the config (more on config within the config section).
+The api server is REST based with JSON webtokens for authentication and is build with Express. It has 3 different ways to authenticate with it on default and can be easily extended by adding more [Passport](http://passportjs.org/docs) strategies. The 3 default strategies (local, Facebook & Google) are configureable by the config under `security.hash`, `security.google` & `security.facebook`.
 
-The API server has middleware for checking if the user is authenticated (isAuthorized), if the authenticated userId equals the resource userId (isSelf). And a few paths pre-defined, required for authentication.
-
-Run the api server by calling the following command
-```
-node . api-server
-```
+The API server has middleware for checking if the user is authenticated (`isAuthorized`), if the authenticated userId equals the resource userId (isSelf). And a few paths pre-defined, required for authentication.
 
 ### Configuration
 
@@ -65,17 +59,24 @@ You can set the desired CORS header for _all_ requests by editing the `"api-serv
 If you prefer set them manually disable the "acceptAll" value by setting it's value to a falsey value. And modifiy `"api-server".cors['Access-Control-Allow-Origin']` & `"api-server".cors['Access-Control-Allow-Header']` manually.
 
 
+### Run server
+
+You can run the api server by calling the following command
+```
+node . api-server
+```
+
 ------------------
 ## Socket server
 
-Pretty basic at the moment, the sockets implementation runs on top of Sockets.io. It has support for defining routes like you can do with Express so it supports [Connect](https://github.com/senchalabs/connect#readme)-style middleware as well.
+Pretty basic at the moment, the sockets implementation runs on top of Sockets.io. It has support for defining routes like you can do with Express. This enables it to support the powerfull [Connect](https://github.com/senchalabs/connect#readme)-style middleware.
 
 ------------------
 ## Mail server
 
 The mail server is a Nodemailer based service which continuously processes the mailing queue. This queue is stored in the Mongodb database within 'mailingQueu'. You can push e-mails to this queu by using Mail.add(mailObject), where mailObject is an object as specified in the `data-models/email.json`
 
-### Configure SMTP
+### Configuration
 
 You will need to configure the smtp connection to be able to send mails. The easiest and most straightforward way of doing so is [described on the website of nodemon](https://nodemailer.com/smtp/).
 This string you will then add to the configuration as followed:
@@ -87,14 +88,3 @@ This string you will then add to the configuration as followed:
     }
 }
 ```
-
-------------------
-
-
-# Roadmap
-- Api server
-    - Add password reset functionality
-- Socket server
-    - Further improvement of Connect implementation
-- Mail server
-    - Add structure for storing e-mail templates
