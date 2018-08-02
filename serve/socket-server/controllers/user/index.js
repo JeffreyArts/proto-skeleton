@@ -26,11 +26,14 @@ module.exports = app => {
             res.users[socket.id] = {};
         },
         update: () => {
+            let props = socket.body;
 
-            const props = rjson.parse(socket.body);
+            if (!_.isObject(props)) {
+                 props = rjson.parse(socket.body);
+            }
 
-            if (typeof props !== "object") {
-                return console.error("user.update value should be an object, is ", socket.body);
+            if (!_.isObject(props)) {
+                return console.error("user.update value should be of type object, is ", typeof socket.body + "(" + socket.body + ")");
             }
 
             _.each(props, (value, key) => {
