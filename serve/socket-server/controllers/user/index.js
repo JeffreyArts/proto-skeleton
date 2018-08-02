@@ -13,7 +13,9 @@ module.exports = app => {
 
 
     socket.on("disconnect", () => {
-        delete res.users[socket.id];
+        if (res.users[socket.id]) {
+            delete res.users[socket.id];
+        }
     })
 
     return {
@@ -23,7 +25,7 @@ module.exports = app => {
             }
 
             // Add user
-            res.users[socket.id] = {};
+            res.users[socket.id] = {id: socket.id};
         },
         update: () => {
             let props = socket.body;

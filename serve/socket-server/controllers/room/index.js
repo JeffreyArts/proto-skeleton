@@ -53,6 +53,14 @@ module.exports = app => {
                 }
             });
             return this;
+        },
+        getUserlist: () => {
+            const users = res.users;
+
+            socket.emit("room.getUserlist.success", _(users).filter({
+                room: users[socket.id].room
+            }))
+            return this;
         }
     };
 };

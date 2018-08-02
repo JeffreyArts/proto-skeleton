@@ -10,6 +10,7 @@ module.exports = app => {
 
     app.route("room.join", room.join)
        .route("room.leave", room.leave)
+       .route("room.getUserlist", room.getUserlist)
 
     return app;
 };
