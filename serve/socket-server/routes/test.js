@@ -17,6 +17,11 @@ module.exports = app => {
         app.namespace.emit("toEveryone.success", socket.body);
     });
 
+    // Get list of users
+    app.route("getUserlist", (socket, res) => {
+        socket.emit("getUserlist.success", res.users);
+    });
+
     // To everyone (within the same room)
     app.route("toEveryoneInRoom", socket => {
         app.namespace.in(socket.body).emit("toEveryoneInRoom.success", `Sending message to everyone in room ${socket.body}`);
