@@ -11,6 +11,11 @@ module.exports = app => {
     const res = app.res;
     const nsp = app.namespace;
 
+
+    socket.on("disconnect", () => {
+        delete res.users[socket.id];
+    })
+
     return {
         init: () => {
             if (typeof res.users !== "object") {
