@@ -2,27 +2,37 @@
 "use strict";
 
 const _ = require("lodash");
-const getuserObj = requireSocket("utilities/get-user-object");
 
 module.exports = app => {
     const socket = app.socket;
     const res = app.res;
-    // const namespace = app.namespace;
+    const roomHelper   = requireSocket("utilities/room")(app);
 
     return {
         join: req => {
             const roomName = req.body;
 
-            if (typeof res.users === "object" && typeof res.users[socket.id] === "object") {
-                res.users[socket.id].room = roomName;
+            // Send message to old room that you have left
+            if (!_.isUndefined(res.users[socket.id].room)) {
+                const o = _.merge({},res.users[socket.id]);
+                socket.leave(res.users[socket.id].room, () => {
+                    roomHelper.broadcast("room.left", o, o.room);
+                });
             }
+
+
+            // Join new room
+            res.users[socket.id].room = roomName;
             socket.join(roomName, err => {
                 if (err) {
                     return console.error(err);
                 }
-                const userObj = _.pick(getuserObj(socket, res), ["socketId", "room"]);
 
-                socket.emit("room.current", roomName);
+                if (_.isObject(res.users)) {
+                    roomHelper.namespace("room.joined", res.users[socket.id]);
+                } else {
+                    roomHelper.namespace("room.joined", socket.id);
+                }
             });
 
 
@@ -30,29 +40,17 @@ module.exports = app => {
             return this;
         },
         leave: () => {
-            const roomName = socket.body;
-            const users = res.users;
-
-            let user = null;
-            if (typeof res.users === "object") {
-                user = users[socket.id];
-            }
-
-            socket.leave(roomName, () => {
-                if (user) {
-                    // Notify others
-                    socket.broadcast.emit("user.left", {
-                        user: user,
-                        users: _(users).filter({
-                            room: socket.room
-                        })
-                    });
-
-                    // Remove socket user from users list
-                    delete users[socket.id];
+            socket.leave(res.users[socket.id].room, () => {
+                if (_.isObject(res.users)) {
+                    roomHelper.namespace("room.left", res.users[socket.id]);
+                } else {
+                    roomHelper.namespace("room.left", socketId);
                 }
             });
             return this;
+        },
+        current: () => {
+            socket.emit("room.current.success", res.users[socket.id].room);
         },
         getUserlist: () => {
             const users = res.users;

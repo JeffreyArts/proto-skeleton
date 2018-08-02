@@ -4,7 +4,6 @@
 
 const rjson = require("relaxed-json")
 const _ = require("lodash");
-const getuserObj = requireSocket("utilities/get-user-object");
 
 module.exports = app => {
     const socket = app.socket
@@ -25,7 +24,11 @@ module.exports = app => {
             }
 
             // Add user
-            res.users[socket.id] = {id: socket.id};
+            let user = {};
+            if (process.env.NODE_ENV === "development") {
+                user = { id: socket.id };
+            }
+            res.users[socket.id] = user;
         },
         update: () => {
             let props = socket.body;
@@ -39,16 +42,13 @@ module.exports = app => {
             }
 
             _.each(props, (value, key) => {
-                if (key == "room") {
+                if (["id", "room"].indexOf(key) !== -1) {
                     return;
                 }
                 res.users[socket.id][key] = value;
             });
 
-
-            const userObj = _.omit(getuserObj(socket, res), ["room"]);
-
-            socket.emit("user.current", userObj)
+            socket.emit("user.current", res.users[socket.id])
         }
     };
 };
