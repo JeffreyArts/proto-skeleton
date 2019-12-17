@@ -30,7 +30,8 @@
     "promised-mongo": "^1.2.0",
     "relaxed-json": "^1.0.1",
     "socket.io": "^2.1.1",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "write": "^2.0.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0"

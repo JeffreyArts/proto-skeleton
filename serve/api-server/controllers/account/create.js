@@ -9,10 +9,10 @@ const hasEmail = requireApi("validators/object/hasEmail");
 const doesNotExists = requireApi("validators/account/doesNotExists");
 
 
-module.exports = function(req, res) {
+module.exports = (req, res, next) => {
 
     const newAccount = req.body;
-    
+
     Promise.all([
         hasPassword(newAccount),
         hasEmail(newAccount),
@@ -24,16 +24,22 @@ module.exports = function(req, res) {
         delete storedAccount.hashedPassword;
         delete storedAccount.salt;
 
-        res.status(201);
-        res.json(storedAccount);
+
+        req.resStatus = 201;
+        req.resContent = storedAccount;
+        return next();
     })
     .catch(() => {
-        res.status(500);
-        res.json({errorCode: "databaseError"});
+        err = new Error("databaseError");
+        req.resStatus = 500;
+        req.error = err;
+        return next();
     });
   })
   .catch(err => {
-      res.status(406);
-      res.json(err);
+      req.resStatus = 406;
+      req.error = err;
+      
+      return next();
   });
 };

@@ -1,6 +1,8 @@
 /* global requireApi */
 
 const Config            = require("config");
+const sendRequest       = requireApi("middleware/send-request");
+const parseExtendQuery  = requireApi("middleware/parse-extend-query");
 const isAuthorized      = requireApi("passport-strategies/jwt").authorize;
 const isSelf            = requireApi("middleware/auth/is-self");
 const localAuthorize    = requireApi("passport-strategies/local").authorize;
@@ -11,11 +13,11 @@ const setReturnUrl = requireApi("middleware/auth/set-return-url");
 
 module.exports = function(app) {
     // Home
-    app.get("/"                                                                                    , requireApi("controllers/home"));
+    app.get("/"                                                                                    , requireApi("controllers/home"), parseExtendQuery, sendRequest);
     // Accounts / Authorization
-    app.post("/accounts"                                                                           , requireApi("controllers/account/create"));
-    app.post("/register"                                                                           , requireApi("controllers/account/create"));
-    app.post("/accounts/request-password-reset"                                                    , requireApi("controllers/account/request-password-reset"));
+    app.post("/accounts"                                                                           , requireApi("controllers/account/create"), sendRequest);
+    app.post("/register"                                                                           , requireApi("controllers/account/create"), sendRequest);
+    app.post("/accounts/request-password-reset"                                                    , requireApi("controllers/account/request-password-reset"), sendRequest);
     // For simple styling of html template: app.get("/accounts/:accountId/forgot-password"                                                 , requireApi("mail-controllers/account/forgot-password"));
     app.get("/auth"                                    , isAuthorized                              , requireApi("controllers/auth/me"));
     app.post("/auth/access-token"                                                                  , requireApi("controllers/account/access-token"));
