@@ -24,11 +24,7 @@ const errorHandler = {
         if (req.error.details) {
             req.resContent.details = req.error.details;
         }
-
-        if (req.error.message === "invalidKeys" && allowedKeys[req.error.details.type]) {
-            req.resContent.details.allowedKeys = allowedKeys[req.error.details.type]
-        }
-
+        
         const temp = errorHandler.getUserFriendlyMessage(req.error);
         if (_.isObject(temp) && temp.userMessage) {
             req.resContent.userMessage = temp.userMessage;

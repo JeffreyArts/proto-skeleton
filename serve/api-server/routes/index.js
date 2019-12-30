@@ -22,12 +22,12 @@ module.exports = function(app) {
     router.post("/register"                                                                           , requireApi("controllers/account/create"), sendRequest);
     router.post("/accounts/request-password-reset"                                                    , requireApi("controllers/account/request-password-reset"), sendRequest);
     // For simple styling of html template: router.get("/accounts/:accountId/forgot-password"                                                 , requireApi("mail-controllers/account/forgot-password"));
-    router.get("/auth"                                    , isAuthorized                              , requireApi("controllers/auth/me"));
-    router.post("/auth/access-token"                                                                  , requireApi("controllers/account/access-token"));
-    router.delete("/accounts/:accountId"                  , isAuthorized, isSelf                      , requireApi("controllers/account/delete"));
-    router.post("/accounts/:accountId"                    , isAuthorized, isSelf                      , requireApi("controllers/account/update"));
-    router.patch("/accounts/:accountId"                   , isAuthorized, isSelf                      , requireApi("controllers/account/update"));
-
+    router.get("/me"                                      , isAuthorized                              , requireApi("controllers/auth/me"), sendRequest);
+    router.get("/accounts/:accountId"                     , isAuthorized, isSelf                      , requireApi("controllers/auth/me"), sendRequest);
+    router.post("/auth/access-token"                                                                  , requireApi("controllers/auth/access-token"), sendRequest);
+    router.delete("/accounts/:accountId"                  , isAuthorized, isSelf                      , requireApi("controllers/account/delete"), sendRequest);
+    router.post("/accounts/:accountId"                    , isAuthorized, isSelf                      , requireApi("controllers/account/update"), sendRequest);
+    router.patch("/accounts/:accountId"                   , isAuthorized, isSelf                      , requireApi("controllers/account/update"), sendRequest);
 
 
     // Local auth
@@ -42,15 +42,9 @@ module.exports = function(app) {
     // Google auth
     if (Config.security.google && Config.security.google.clientID) {
         const googleAuthorize   = requireApi("passport-strategies/google").authorize;
-
         router.get("/auth/google"                          , setReturnUrl, googleAuthorize            );
         router.get("/auth/google/callback"                 , googleAuthorize                          , requireApi("controllers/auth/refresh-token"));
     }
-
-
-    router.get("/test", isAuthorized, (req,res) => {
-        res.status(200).send(req.user);
-    });
 
     app.use(Config['api-server'].prefix,router);
     return app;

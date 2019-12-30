@@ -8,11 +8,14 @@ const {each, size}  = require("lodash");
 const allowedKeys = ["password", "name", "email"]
 
 
-module.exports = function(req, res) {
+module.exports = function(req, res, next) {
+
+    if (req.error) {
+        return next();
+    }
 
     const accountId = req.params.accountId;
     const properties = req.body;
-
     Account.getById(accountId)
     .then(() => {
         const allowedKeyErrors = [];
@@ -23,20 +26,27 @@ module.exports = function(req, res) {
         })
 
         if (allowedKeyErrors.length > 0) {
-            return res.status(400)
-            .json({
-                errorType: "invalidKeys",
-                invalidKeys: allowedKeyErrors
-            });
+            req.error = new Error("invalidKeys");
+            req.error.details = {
+                invalidKeys: allowedKeyErrors,
+                allowedKeys: allowedKeys
+            }
+            req.resStatus = 400;
+            return next();
         }
 
         if (size(properties) == 0) {
-            return res.status(400)
-            .json({
-                errorType: "emptyJSON"
-            });
+            req.error = new Error("emptyJSON");
+            req.resStatus = 400;
+            return next();
         }
-        
+
+        if (properties.email && properties.email.indexOf("@") === -1) {
+            req.error = new Error("invalidEmail");
+            req.resStatus = 400;
+            return next();
+        }
+
         if (properties.password) {
             properties.salt = pass.getSalt();
             properties.hashedPassword = pass.getHashedPass(properties.password, properties.salt);
@@ -46,23 +56,23 @@ module.exports = function(req, res) {
         }
 
 
+
         return Account.update(accountId, properties)
         .then(updatedAccount => {
-            return res.status(201)
-            .json(updatedAccount);
+            req.resContent = updatedAccount
+            req.resStatus = 201;
+            return next();
         })
         .catch(err => {
-            console.error(err);
-            return res.status(500)
-            .json({errorCode: "databaseError"});
+            req.error = new Error("databaseError");
+            req.error.details = err;
+            req.resStatus = 500;
+            return next();
         });
     })
     .catch(err => {
-        res.status(403)
-        res.json({
-            errorType: err
-        });
+        req.error = err;
+        req.resStatus = 403;
+        return next();
     })
-
-
 };

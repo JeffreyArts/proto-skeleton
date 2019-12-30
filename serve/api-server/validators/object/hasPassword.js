@@ -1,5 +1,4 @@
 module.exports = obj => new Promise((resolve, reject) => {
-
     if (!obj.password) {
         const err = new Error("missingProperty");
         err.details = {

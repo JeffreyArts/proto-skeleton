@@ -1,4 +1,18 @@
 
+[30/12 21:15:05] invalidKeys- [object Object]
+[30/12 21:14:53] invalidEmail
+[30/12 21:11:38] invalidKeys- [object Object]
+[30/12 21:02:16] invalidToken
+[30/12 21:01:59] invalidToken
+[30/12 21:01:17] invalidToken
+[30/12 20:57:21] invalidToken
+[30/12 20:56:59] undefined
+[30/12 20:56:48] undefined
+[30/12 20:56:39] undefined
+[30/12 20:56:19] undefined
+[30/12 20:55:59] unknownToken
+[30/12 20:10:51] missingProperty- [object Object]
+[30/12 20:10:45] missingProperty- [object Object]
 [17/12 22:49:17] hasNoEmail
 [17/12 22:48:53] hasNoEmail
 [17/12 22:48:36] hasNoEmail
