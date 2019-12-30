@@ -1,9 +1,9 @@
 /* global requireShared */
 
 const signToken   = requireShared("utilities/signToken");
-const Account           = requireShared("models/account");
+const Account     = requireShared("models/account");
 
-module.exports = function(req, res) {
+module.exports = function(req, res, next) {
     const tokenMap = {
         refreshToken: () => {
             return Account.getAccessTokenByRefresh(req.body.refreshToken)
@@ -28,30 +28,27 @@ module.exports = function(req, res) {
         .then(tmp => {
             Account.getById(tmp._id)
             .then(account => {
-                return res.status(200)
-                .json({
+                req.resStatus = 200;
+                req.resContent = {
                     accessToken: signToken(account, "access")
-                })
+                };
+                return next();
             })
             .catch(err => {
-                return res.status(400)
-                .json({
-                    errorType: err
-                })
+                req.resStatus = 400;
+                req.error = err;
+                return next();
             })
         })
         .catch(err => {
-            return res.status(400)
-            .json({
-                errorType: err
-            })
+            req.resStatus = 400;
+            req.error = new Error("invalidToken");
+            return next();
         })
     }
 
     // Unknown token
-    return res.status(400)
-    .json({
-        errorType: "unknownToken"
-    })
-
+    req.resStatus = 400;
+    req.error = new Error("unknownToken");
+    return next();
 };

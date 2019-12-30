@@ -1,9 +1,22 @@
 module.exports = obj => new Promise((resolve, reject) => {
     if (typeof obj.email === "undefined") {
-        return reject({errorType: "missingProperty", properties: {property: "email"}});
+
+        const err = new Error("missingProperty");
+        err.details = {
+            properties: {
+                property: "email"
+            }
+        };
+        return reject(err);
 
     } else if (obj.email.indexOf("@") === -1) {
-        return reject({errorType: "invalidProperty", properties: {property: "email"}});
+        const err = new Error("invalidProperty");
+        err.details = {
+            properties: {
+                property: "email"
+            }
+        };
+        return reject(err);
     }
     return resolve(true);
 
