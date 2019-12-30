@@ -10,14 +10,22 @@ const localAuthorize    = requireApi("passport-strategies/local").authorize;
 
 // Middleware
 const setReturnUrl = requireApi("middleware/auth/set-return-url");
+const multer       = require("multer");
+const upload       = multer({ dest: "uploads/" });
 
 
 module.exports = function(app) {
     var router = express.Router()
 
-    // Home
+
+//////////////////////////////////////////////
+// Home
+//////////////////////////////////////////////
     router.get("/"                                                                                    , requireApi("controllers/home"), parseExtendQuery, sendRequest);
-    // Accounts / Authorization
+
+//////////////////////////////////////////////
+// Accounts
+//////////////////////////////////////////////
     router.post("/accounts"                                                                           , requireApi("controllers/account/create"), sendRequest);
     router.post("/register"                                                                           , requireApi("controllers/account/create"), sendRequest);
     router.post("/accounts/request-password-reset"                                                    , requireApi("controllers/account/request-password-reset"), sendRequest);
@@ -29,6 +37,9 @@ module.exports = function(app) {
     router.post("/accounts/:accountId"                    , isAuthorized, isSelf                      , requireApi("controllers/account/update"), sendRequest);
     router.patch("/accounts/:accountId"                   , isAuthorized, isSelf                      , requireApi("controllers/account/update"), sendRequest);
 
+//////////////////////////////////////////////
+// Authorization methods
+//////////////////////////////////////////////
 
     // Local auth
     router.post("/auth"                                    , localAuthorize                            , requireApi("controllers/auth/refresh-token"));
@@ -45,6 +56,14 @@ module.exports = function(app) {
         router.get("/auth/google"                          , setReturnUrl, googleAuthorize            );
         router.get("/auth/google/callback"                 , googleAuthorize                          , requireApi("controllers/auth/refresh-token"));
     }
+
+
+//////////////////////////////////////////////
+// Upload
+//////////////////////////////////////////////
+
+    router.post("/upload/image"                           , isAuthorized, upload.single("image")      , requireApi("controllers/upload/image"));
+    router.get("/images/:imageId"                                                                      , requireApi("controllers/upload/get-image"));
 
     app.use(Config['api-server'].prefix,router);
     return app;
