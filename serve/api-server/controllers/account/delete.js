@@ -2,16 +2,23 @@
 
 const Account = requireShared("models/account");
 
-module.exports = function(req, res) {
+module.exports = function(req, res, next) {
+
+    if (req.error) {
+        return next();
+    }
+
     const accountId = req.params.accountId;
 
     Account.delete(accountId)
     .then(deletedAccount => {
-        res.status(201);
-        res.json(deletedAccount);
+        req.resStatus = 201;
+        req.resContent = deletedAccount;
+        return next();
     })
       .catch(err => {
-          res.status(406);
-          res.json({errorType: err});
+          req.resStatus = 406;
+          req.error = err;
+          return next();
       });
 };

@@ -67,7 +67,7 @@ app.use((req, res, next) => {
     }
 
     if (Config["api-server"].cors.methods) {
-        res.header("Access-Control-Allow-Headers", Config["api-server"].cors.methods);
+        res.header("Access-Control-Allow-Methods", Config["api-server"].cors.methods);
     }
 
     if (Config["api-server"].cors.headers) {

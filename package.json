@@ -14,12 +14,14 @@
     "ejs": "^2.5.6",
     "express": "^4.14.0",
     "express-session": "^1.15.3",
+    "gm": "^1.23.1",
     "http-errors": "^1.5.1",
     "jsonwebtoken": "^7.2.1",
     "lodash": "^4.17.4",
     "moment": "^2.17.1",
     "mongodb": "^2.2.22",
-    "monk": "^5.0.2",
+    "monk": "^6.0.2",
+    "multer": "^1.4.2",
     "node-sass": "^4.5.3",
     "nodemailer": "^2.7.2",
     "passport": "^0.3.2",
@@ -30,7 +32,7 @@
     "promised-mongo": "^1.2.0",
     "relaxed-json": "^1.0.1",
     "socket.io": "^2.1.1",
-    "winston": "^2.3.1"
+    "write": "^2.0.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0"

@@ -31,17 +31,29 @@ module.exports = {
 
             // Validate missing token
             if (info && info.message === "No access token") {
-                return res.status(422).send({errorType: "noAccessToken"});
+                req.error = new Error("noAccessToken")
+                req.error.details = info;
+                req.resStatus = 422;
+                return next();
             }
 
             // Validate corrupted token
             if (!user) {
-                return res.status(422).send({errorType: "tokenExpired"});
+                // Check if header `Authorization: jwt {token}` is set properly
+                req.error = new Error("tokenExpired")
+                req.resStatus = 422;
+                return next();
             }
 
             // Validate token type
             if (user.tokenType != "access") {
-                return res.status(422).send({errorType: "invalidTokenType"});
+                req.error = new Error("invalidTokenType")
+                req.error.details = {
+                    shouldBe: "access",
+                    is: user.tokenType
+                }
+                req.resStatus = 422;
+                return next();
             }
 
             delete user.tokenType;
@@ -51,7 +63,6 @@ module.exports = {
                 if (err) {
                     return next(err);
                 }
-
                 next();
             });
         })(req, res, next);

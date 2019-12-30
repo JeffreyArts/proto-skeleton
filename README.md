@@ -26,7 +26,7 @@ Set a secret key (used for signing the JWT):
 
 The api server is REST based with JSON webtokens for authentication and is build with Express. It has 3 different ways to authenticate with it on default and can be easily extended by adding more [Passport](http://passportjs.org/docs) strategies. The 3 default strategies (local, Facebook & Google) are configureable by the config under `security.hash`, `security.google` & `security.facebook`.
 
-The API server has middleware for checking if the user is authenticated (`isAuthorized`), if the authenticated userId equals the resource userId (isSelf). And a few paths pre-defined, required for authentication.
+The API server has middleware for checking if the user is authenticated (`isAuthorized`), if the authenticated userId equals the resource userId (isSelf). And a few paths pre-defined, required for authentication. To use this feature you'll need to request the route with the following header set "`Authorization: JWT {AccessToken}`".
 
 ### Configuration
 
