@@ -9,7 +9,7 @@ module.exports = {
     * Node Scripts
     ***************************************************************/
     "api-server": {
-
+        prefix: "/", // Prefix for all paths in routes/index.js
         cors: {
             acceptAll: false, // Noob way, ignores "Access-Control-Allow-Origin" & "Access-Control-Allow-Headers" values
             origin: null,
