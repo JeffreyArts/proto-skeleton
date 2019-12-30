@@ -5,7 +5,7 @@ const {pick, size} = require("lodash");
 const passport = require("passport");
 
 const options = {
-    jwtFromRequest: ExtractJwt.fromAuthHeader(),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt'),
     secretOrKey: Config.security.secret,
     algorithms: [Config.security.hash],
     session: false
