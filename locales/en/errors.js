@@ -14,5 +14,9 @@ module.exports = {
     accountAlreadyExists: {
         userMessage: "An account with this e-mail already exists",
         devMessage: "Failed to create account, because e-mailaddress already exists in database"
-    }
+    },
+    invalidTokenFormat: {
+        userMessage: "Can not finish request cause of a technical error",
+        devMessage: "Invalid token format, use 'JWT {TOKEN}'."
+    },
 }
