@@ -42,18 +42,16 @@ module.exports = function(req, res, next) {
             return next()
         })
         .catch(err => {
-            const error = new Error('internalServerError');
-            error.details = err;
-            req.error = error
+            req.error = new Error('internalServerError');
+            req.error.details = err;
             req.resStatus = 500;
             return next();
         });
     })
     .catch(err => {
+        req.error = new Error('internalServerError');
+        req.error.details = err;
         req.resStatus = 500;
-        const error = new Error('internalServerError');
-        error.details = err;
-        req.error = error;
         return next();
     });
 };

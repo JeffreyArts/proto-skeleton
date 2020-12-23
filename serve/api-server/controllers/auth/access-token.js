@@ -43,6 +43,7 @@ module.exports = function(req, res, next) {
         .catch(err => {
             req.resStatus = 400;
             req.error = new Error("invalidToken");
+            req.error.details = token;
             return next();
         })
     }
@@ -50,5 +51,6 @@ module.exports = function(req, res, next) {
     // Unknown token
     req.resStatus = 400;
     req.error = new Error("unknownToken");
+    req.error.details = token;
     return next();
 };

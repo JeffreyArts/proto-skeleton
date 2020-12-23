@@ -17,24 +17,28 @@ const Account = {
 
         return new Promise((resolve, reject) => {
             collection.findOne({email: account.email})
-      .then(result => {
-          if (result === null) {
-              newAccount.salt = pass.getSalt();
+            .then(result => {
+              if (result === null) {
+                  newAccount.salt = pass.getSalt();
 
-              if (typeof newAccount.password === "string") {
-                  newAccount.hashedPassword = pass.getHashedPass(newAccount.password, newAccount.salt);
-                  // IMPORTANT: Remove unhashed password
-                  delete newAccount.password;
+                  if (typeof newAccount.password === "string") {
+                      newAccount.hashedPassword = pass.getHashedPass(newAccount.password, newAccount.salt);
+                      // IMPORTANT: Remove unhashed password
+                      delete newAccount.password;
+                  }
+
+                  newAccount.created = moment.utc().unix();
+              // Insert newAccount in database
+                  return collection.insert(newAccount).then(result => resolve(result));
               }
+              return reject(new Error("accountAlreadyExists"));
+            })
 
-              newAccount.created = moment.utc().unix();
-          // Insert newAccount in database
-              return collection.insert(newAccount).then(result => resolve(result));
-          }
-          return reject("accountAlreadyExists");
-      })
-      .catch(error => reject(error));
-
+            .catch(error => {
+                var err = new Error("internalServerError")
+                err.details = error;
+                reject(err);
+            });
         });
 
     },
@@ -54,11 +58,17 @@ const Account = {
 
                 return resolve(updatedAccount)
             })
-            .catch(err => {
-                return reject(err);
-            })
+            .catch(error => {
+                var err = new Error("internalServerError")
+                err.details = error;
+                reject(err);
+            });
         })
-        .catch(reject);
+        .catch(error => {
+            var err = new Error("internalServerError")
+            err.details = error;
+            reject(err);
+        });
 
     }),
     delete: accountId => new Promise((resolve, reject) => {
@@ -68,9 +78,17 @@ const Account = {
             .then(() => {
                 return resolve(account);
             })
-            .catch(reject);
+            .catch(error => {
+                var err = new Error("internalServerError")
+                err.details = error;
+                reject(err);
+            });
         })
-        .catch(reject);
+        .catch(error => {
+            var err = new Error("internalServerError")
+            err.details = error;
+            reject(err);
+        });
     }),
 
     // Create account
@@ -92,9 +110,13 @@ const Account = {
                     // Insert newAccount in database
                     return collection.insert(newAccount).then(result => resolve(result));
                 }
-                return reject("accountAlreadyExists");
+                return reject(new Error("accountAlreadyExists"));
             })
-            .catch(reject);
+            .catch(error => {
+                var err = new Error("internalServerError")
+                err.details = error;
+                reject(err);
+            });
         });
 
     },
@@ -115,9 +137,13 @@ const Account = {
                     // Insert newAccount in database
                     return collection.insert(newAccount).then(result => resolve(result));
                 }
-                return reject("accountAlreadyExists");
+                return reject(new Error("accountAlreadyExists"));
             })
-            .catch(reject);
+            .catch(error => {
+                var err = new Error("internalServerError")
+                err.details = error;
+                reject(err);
+            });
         });
 
     },
@@ -129,12 +155,14 @@ const Account = {
         collection.findOne({email: email})
         .then(account => {
             if (!account) {
-                return reject("accountNotFound");
+                var err = new Error("accountNotFound");
+                err.details = {email:email};
+                return reject(err);
             }
 
             if (password) {
                 if (account.hashedPassword !== pass.getHashedPass(password, account.salt)) {
-                    return reject("incorrectPassword");
+                    return reject(new Error("incorrectPassword"));
                 }
             }
 
@@ -143,9 +171,10 @@ const Account = {
 
             return resolve(account);
         })
-        .catch(err => {
-            console.log(err);
-            reject("internalServerError");
+        .catch(error => {
+            var err = new Error("internalServerError")
+            err.details = error;
+            reject(err);
         })
     }),
     getById: accountId => new Promise((resolve, reject) => {
@@ -153,7 +182,9 @@ const Account = {
             collection.findOne({_id: ObjectId(accountId)})
             .then(account => {
                 if (!account) {
-                    return reject("accountNotFound");
+                    var err = new Error("accountNotFound");
+                    err.details = {_id: accountId};
+                    return reject(err);
                 }
 
                 delete account.salt;
@@ -161,42 +192,49 @@ const Account = {
 
                 return resolve(account);
             })
-            .catch(err => {
-                console.error(err);
-                reject("internalServerError");
+            .catch(error => {
+                var err = new Error("internalServerError")
+                err.details = error;
+                reject(err);
             });
         } else {
-            return reject("invalidId");
+            var error = new Error("invalidId");
+            error.details = {accountId: accountId}
+            return reject(error);
         }
     }),
     getByFacebookId: facebookId => new Promise((resolve, reject) => {
         collection.findOne({facebookId: facebookId})
         .then(account => {
             if (!account) {
-                // Create account when none is found
-                return reject("accountNotFound");
+                var err = new Error("accountNotFound");
+                err.details = {facebookId: facebookId};
+                return reject(err);
             }
 
             return resolve(account);
         })
-        .catch(err => {
-            console.error(err);
-            reject("internalServerError");
+        .catch(error => {
+            var err = new Error("internalServerError")
+            err.details = error;
+            reject(err);
         });
     }),
     getByGoogleId: googleId => new Promise((resolve, reject) => {
         collection.findOne({googleId: googleId})
         .then(account => {
             if (!account) {
-                // Create account when none is found
-                return reject("accountNotFound");
+                var err = new Error("accountNotFound");
+                err.details = {googleId: googleId};
+                return reject(err);
             }
 
             return resolve(account);
         })
-        .catch(err => {
-            console.error(err);
-            reject("internalServerError");
+        .catch(error => {
+            var err = new Error("internalServerError")
+            err.details = error;
+            reject(err);
         });
     }),
 
@@ -206,12 +244,12 @@ const Account = {
             algorithms: [Config.security.hash]
         }, (err, decoded) => {
             if (err) {
-                return reject("corruptedToken")
+                return reject(new Error("corruptedToken"))
             } else {
                 if (decoded.tokenType === "refresh") {
                     return resolve(decoded);
                 }
-                return reject("invalidToken")
+                return reject(new Error("invalidToken"))
             }
         });
     }),
@@ -220,12 +258,12 @@ const Account = {
             algorithms: [Config.security.hash]
         }, (err, decoded) => {
             if (err) {
-                return reject("corruptedToken")
+                return reject(new Error("corruptedToken"))
             } else {
                 if (decoded.tokenType === "passwordReset") {
                     return resolve(decoded);
                 }
-                return reject("invalidToken")
+                return reject(new Error("invalidToken"))
             }
         });
     })

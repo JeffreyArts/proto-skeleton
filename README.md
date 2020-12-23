@@ -66,6 +66,21 @@ You can run the api server by calling the following command
 node . api-server
 ```
 
+### Error handling
+
+On all API routes, there is a default way for managing errors. You can pass errors by creating an error object.
+Errors can be created in the models, or in the controllers.
+
+```
+var err = new Error("example");
+err.details = {details: "You can add all kind of details about the error if you'd wish."}
+```
+
+Errors will be published in the response to the public, in the console, as well as in a logfile. All errors can have descriptive information by adding them to the errors file, located at `locales/[language_code]/errors`. 
+
+The `api-server.strict` boolean is meant for situations in which you want to remove certain functionalities for production, but  would like to keep them in the development environment. This feature is also implemented in the error handling. When strict = true, it won't show the dev message and the details of the error. Only the errorCode and the user message will be returned. This variable can also be used manually, in order to limit the user input on requests for example.
+
+
 ------------------
 ## Socket server
 

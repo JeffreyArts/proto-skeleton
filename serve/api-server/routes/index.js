@@ -42,7 +42,7 @@ module.exports = function(app) {
 //////////////////////////////////////////////
 
     // Local auth
-    router.post("/auth"                                    , localAuthorize                            , requireApi("controllers/auth/refresh-token"));
+    router.post("/auth"                                    , localAuthorize                            , requireApi("controllers/auth/refresh-token"), sendRequest);
 
     // Facebook auth
     if (Config.security.facebook && Config.security.facebook.clientID) {

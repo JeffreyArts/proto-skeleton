@@ -17,13 +17,13 @@ const options = {
 
 
 module.exports = {
-    strategy: new localStrategy( options, (email, password, done) => {
+    strategy: new localStrategy( options, (email, password, next) => {
         Account.getByEmail(email, password)
         .then(account => {
-            return done(null, account);
+            return next(null, account);
         })
         .catch(err => {
-            return done({errorType: err});
+            return next(err);
         });
     }),
 
@@ -46,12 +46,15 @@ module.exports = {
                     return next();
                 }
 
-                return res.status(406).send(err);
+                req.resStatus = 406;
+                req.error = err;
+                return next();
             })(req, res, next);
         })
         .catch(err => {
-            res.status(406);
-            res.json(err);
+            req.resStatus = 406;
+            req.error = err;
+            next();
         });
     }
 }
