@@ -40,7 +40,7 @@ module.exports = {
             // Validate corrupted token
             if (!user) {
                 // Check if header `Authorization: jwt {token}` is set properly
-                if (req.headers.authorization.indexOf("JWT ") == -1) {
+                if (req.headers.authorization && req.headers.authorization.indexOf("JWT ") == -1) {
                      req.error = new Error("invalidTokenFormat")
                  } else {
                      req.error = new Error("tokenExpired")
