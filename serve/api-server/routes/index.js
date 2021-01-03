@@ -69,6 +69,9 @@ module.exports = function(app) {
     
     
     app.use(function(req, res, next) {
+        if (req.method == "OPTIONS") {
+            return next();
+        }
         req.error = new Error("endPointUnavailable");
         req.error.details = {
             endpoint: req.url
