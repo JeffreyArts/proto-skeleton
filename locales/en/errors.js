@@ -19,4 +19,8 @@ module.exports = {
         userMessage: "Can not finish request cause of a technical error",
         devMessage: "Invalid token format, use 'JWT {TOKEN}'."
     },
+    endPointUnavailable: {
+        userMessage: "Endpoint does not exists",
+        devMessage: "No routing has been set for endpoint"
+    }
 }
