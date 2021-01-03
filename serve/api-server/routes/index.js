@@ -66,5 +66,17 @@ module.exports = function(app) {
     router.get("/images/:imageId"                                                                      , requireApi("controllers/upload/get-image"));
 
     app.use(Config['api-server'].prefix,router);
+    
+    
+    app.use(function(req, res, next) {
+        req.error = new Error("endPointUnavailable");
+        req.error.details = {
+            endpoint: req.url
+        }
+        req.resStatus = 404;
+
+        sendRequest(req,res,next)
+    });
+    
     return app;
 };
