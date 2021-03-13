@@ -31,7 +31,7 @@
     "passport-local": "^1.0.0",
     "promised-mongo": "^1.2.0",
     "relaxed-json": "^1.0.3",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "write": "^2.0.0"
   },
   "devDependencies": {
