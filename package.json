@@ -17,7 +17,7 @@
     "gm": "^1.23.1",
     "http-errors": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mongodb": "^3.6.3",
     "monk": "^7.3.2",
