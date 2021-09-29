@@ -4,7 +4,6 @@ const errorHandler = requireShared("utilities/error-handler");
 
 module.exports = function(req, res) {
     req.resStatus = req.resStatus || 200;
-    
     if (req.error) {
         req.resStatus = req.resStatus || 404;
         errorHandler.processError(req);

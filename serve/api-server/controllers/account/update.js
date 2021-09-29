@@ -43,7 +43,6 @@ module.exports = function(req, res, next) {
 
         if (properties.email && properties.email.indexOf("@") === -1) {
             req.error = new Error("invalidEmail");
-            req.error.details = properties.email;
             req.resStatus = 400;
             return next();
         }

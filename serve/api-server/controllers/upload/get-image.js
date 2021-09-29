@@ -8,7 +8,7 @@ const gm = require("gm").subClass({imageMagick: true});
 const mkdirp = require("mkdirp");
 const mime = require('mime-types');
 
-module.exports = function(req, res) {
+module.exports = function(req, res, next) {
 
     const imageId = req.params.imageId;
     let size = req.query.size || "1000x1000";
@@ -81,30 +81,31 @@ module.exports = function(req, res) {
                 }
             )
             .catch(err => {
-                console.error(err);
-                res.status(500);
-                res.json({
-                    errorCode: "brokenImage"
-                });
+                req.error = new Error("brokenImage");
+                req.error.details = err;
+                req.resStatus = 500;
+                return next();
             });
     }
 
     if (isObjectid(imageId)) {
-        console.log(imageId, "imageId");
         Upload.load(imageId)
             .then(returnImage)
             .catch(err => {
-                console.error(err);
-                res.status(500);
-                res.json({
-                    errorCode: "notFound"
-                });
+                req.error = new Error("notFound");
+                req.error.details = {
+                    imageId: imageId
+                };
+                req.resStatus = 204;
+                return next();
             });
     } else {
-        res.status(500);
-        res.json({
-            errorCode: "notFound"
-        });
+        req.error = new Error("invalidImageId");
+        req.error.details = {
+            imageId: imageId
+        };
+        req.resStatus = 400;
+        return next();
     }
 
 };

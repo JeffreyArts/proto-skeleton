@@ -18,27 +18,28 @@ module.exports = (req, res, next) => {
         hasEmail(newAccount),
         doesNotExists(newAccount)
     ])
-    .then(() => {
-        Account.create(newAccount)
-        .then(storedAccount => {
-            delete storedAccount.hashedPassword;
-            delete storedAccount.salt;
+  .then(() => {
+      Account.create(newAccount)
+    .then(storedAccount => {
+        delete storedAccount.hashedPassword;
+        delete storedAccount.salt;
 
-            req.resStatus = 201;
-            req.resContent = storedAccount;
-            return next();
-        })
-        .catch(() => {
-            req.error = new Error("databaseError");
-            req.resStatus = 500;
-            req.error.details = "Account.create controller";
-            return next();
-        });
+
+        req.resStatus = 201;
+        req.resContent = storedAccount;
+        return next();
     })
-    .catch(err => {
-        req.resStatus = 406;
+    .catch(() => {
+        err = new Error("databaseError");
+        req.resStatus = 500;
         req.error = err;
-
         return next();
     });
+  })
+  .catch(err => {
+      req.resStatus = 400;
+      req.error = err;
+
+      return next();
+  });
 };
