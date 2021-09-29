@@ -3,6 +3,7 @@
 const localStrategy = require("passport-local").Strategy;
 const passport = require("passport");
 const Account = requireShared("models/account");
+const validEmail        = requireShared("utilities/validate-email");
 
 const hasPassword = requireApi("validators/object/hasPassword");
 const hasEmail = requireApi("validators/object/hasEmail");
@@ -31,6 +32,15 @@ module.exports = {
     authorize: (req, res, next) => {
         const credentials = req.body;
 
+        if (!validEmail(req.body.email)) {
+            req.error = new Error("invalidEmailaddress")
+            req.resStatus = 400;
+            req.error.details = {
+                input: req.body.email
+            }
+            return next();
+        }
+
         Promise.all([
             hasPassword(credentials),
             hasEmail(credentials)
@@ -45,13 +55,15 @@ module.exports = {
                 if (account) {
                     return next();
                 }
-
-                return res.status(406).send(err);
+                req.error = err;
+                req.resStatus = 406;
+                return next();
             })(req, res, next);
         })
         .catch(err => {
-            res.status(406);
-            res.json(err);
+            req.error = err;
+            req.resStatus = 406;
+            return next();
         });
     }
 }

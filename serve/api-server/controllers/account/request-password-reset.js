@@ -8,11 +8,22 @@ const emailDataModel    = requireDatamodel("email");
 const Account           = requireShared("models/account");
 const Mail              = requireShared("models/mail");
 const signToken         = requireShared("utilities/signToken");
+const validEmail        = requireShared("utilities/validate-email");
 
 
 module.exports = function(req, res, next) {
     const accountEmail      = req.body.email;
     const templateValues    = requireLocale("en/mail/forgot-password");
+
+    if (!validEmail(accountEmail)) {
+        req.error = new Error("invalidEmailaddress")
+        req.resStatus = 400;
+        req.error.details = {
+            input: accountEmail
+        }
+        return next();
+    }
+
     Account.getByEmail(accountEmail)
     .then(account => {
         const token = signToken({_id: account._id}, "passwordReset");

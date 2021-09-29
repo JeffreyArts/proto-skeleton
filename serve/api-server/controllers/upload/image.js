@@ -8,37 +8,40 @@ const Upload = requireShared("models/upload");
 const isImage       = requireApi("validators/upload/is-image");
 
 
-module.exports = function(req, res) {
+module.exports = function(req, res, next) {
+    if (req.error) {
+        return next();
+    }
+
     const file = req.file;
-    
+
     if (!file) {
-        return res.status(500)
-            .json({
-                errorType: "noFile"
-            });
+        req.error = new Error("noFile");
+        req.resStatus = 400;
+        return next();
     }
 
     Promise.all([
         isImage(file["mimetype"]),
     ])
-        .then(() => {
-            file.accountId = req.user._id;
-            Upload.save(file)
-                .then(o => {
-                    const result = _.pick(o, ["_id"])
-                    res.status(201);
-                    res.json(result);
-                })
-                .catch(err => {
-                    console.error(err);
-                    res.status(500);
-                    res.json({
-                        errorCode: "databaseError"
-                    });
-                });
-        })
-        .catch(err => {
-            res.status(406);
-            res.json(err);
-        });
+    .then(() => {
+        file.accountId = req.user._id;
+        Upload.save(file)
+            .then(o => {
+                req.resContent = _.pick(o, ["_id"]);
+                req.resStatus = 201;
+                return next();
+            })
+            .catch(err => {
+                req.error = new Error("databaseError");
+                req.error.details = err;
+                req.resStatus = 500;
+                return next();
+            });
+    })
+    .catch(err => {
+        req.error = err;
+        req.resStatus = 406;
+        return next();
+    });
 };

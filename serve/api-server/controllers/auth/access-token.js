@@ -4,6 +4,10 @@ const signToken   = requireShared("utilities/signToken");
 const Account     = requireShared("models/account");
 
 module.exports = function(req, res, next) {
+    if (req.error) {
+        return next();
+    }
+    
     const tokenMap = {
         refreshToken: () => {
             return Account.getAccessTokenByRefresh(req.body.refreshToken)

@@ -1,23 +1,24 @@
 "use strict";
 
 module.exports = function(req, res, next) {
+    if (req.error) {
+        return next()
+    }
+
     if (!req.user) {
-        console.error("First decode JWT token with JWT strategy");
-        return res.status(500).send({
-            errorType: "noTokenProcessed"
-        });
+        req.resStatus = 422;
+        req.error = new Error("noTokenProcessed");
+        return next();
     }
 
     // decode token
     if (req.user._id == req.params.accountId) {
-        next();
-        return true;
+        return next();
     } else {
         // if someone else tries to get your messages
         // return an error
-        res.status(400).send({
-            errorType: "unauthorizedAction"
-        });
-        return false;
+        req.resStatus = 400;
+        req.error = new Error("unauthorizedAction");
+        return next();
     }
 }

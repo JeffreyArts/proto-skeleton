@@ -37,7 +37,7 @@ module.exports = (req, res, next) => {
     });
   })
   .catch(err => {
-      req.resStatus = 406;
+      req.resStatus = 400;
       req.error = err;
 
       return next();
